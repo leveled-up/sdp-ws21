@@ -1,0 +1,25 @@
+\section{Roboterkonzept}
+% Beschreiben Sie einleitend das Grundkonzept Ihres Roboters und wie Sie vorhaben, die jeweiligen Teilaufgaben zu lösen. Dies muss, wenn es auf die Bauweise ankommt, mit jeweils mindestens einem Foto, wie in Abbildung~\ref{Figure:Front} und~\ref{Figure:Side} bzw. in Abbildung~\ref{Figure:Sensors} gezeigt, illustriert werden.
+% Tipp: Mit geschützten Leerzeichen ($\sim$) können Zeilenumbrüche verhindert werden!
+
+Der Roboter verfügt über zwei direkt gegenüberliegende, unabhängig von einander angetriebene Achsen mit größeren Rädern. Diese werden durch eine zusätzliche Achse mit einem kleinen Rad am hinteren Ende des Fahrzeugs unterstützt. Beide sind in Abbildung~\ref{Figure:Side} deutlich zu erkennen. Auf einem Grundgerüst liegt der NXT-Mikrocontroller orthogonal zur Fahrtrichtung auf. An ihm, sowie an weiteren Streben ist die Sensorkonstruktion (Abbildungen~\ref{Figure:Front}~und~\ref{Figure:Sensors}) befestigt.
+
+\subsection{Linienverfolgung}
+
+Zur Linienverfolgung besitzt der Roboter an seiner Front \textit{drei Lichtsensoren} (siehe Abbildung~\ref{Figure:Front}), davon einen in der Mitte, der die Leitlinie entlang der Strecke verfolgt. Ein linker und ein rechter Sensor haben je einen Abstand von ca $5~cm$ zum mittleren Sensor, sie verfolgen die Umgebung neben der Fahrlinie und dienen der Erkennung von Kurven. Die Linien werden erkannt indem der Sensorwert gegen einen festgelegten Grenzwert verglichen wird.
+
+\subsection{Schranke}
+
+Zur Erkennung der Schranke sieht das Roboterkonzept eine universelle \textit{Erkennung von Objekten auf der Strecke} mittels des frontal angebrachten \textit{Ultraschallsensors}, wie in Abbildung~\ref{Figure:Front} zu sehen vor. Mit ihm ermittelt das Gerät den Abstand zu Objekten vor ihm. Wenn dieser Wert einen Grenzwert unterschreitet, wird abgewartet solange bis die Strecke wieder frei ist. Dann setzt der Roboter seine Fahrt fort.
+
+\subsection{Entscheidung}
+
+Die Entscheidung bei Weggabelungen fällt der Roboter nicht durch ein dezidiertes Verfahren sondern lediglich dadurch, dass zuerst geprüft wird, ob eine Linkskurve anhand der Sensorwerte möglich ist bevor dasselbe für eine Rechtskurve geschieht. Somit wählt der Roboter \textit{bevorzugt den linken Weg}.
+
+\subsection{Lücken}
+
+Wenn der Roboter anhand der Werte der Lichtsensoren keine Fahrlinie mehr ermitteln kann, fährt er \textit{geradeaus weiter} und beginnt eine \textit{Zeitzählung}. Überschreitet die Zeit, die ohne Fahrlinie gefahren wird einen festgelegten Grenzwert bricht der Roboter die Fahrt ab und kehrt rückwärts zur Fahrlinie zurück. Dieses Verfahren kommt auch beim Linienende zum Einsatz.
+
+\subsection{Enge Kurven}
+
+Der \textit{mittlere Lichtsensor} dient im Falle einer Kurve zur \textit{Abschätzung des Kurvenradius}. Wenn einer der äußeren Sensoren anschlägt und das Gerät folglich um eine Kurve fährt, so wird auch der mittlere Sensor berücksichtigt. Wenn er ebenfalls anschlägt wird weniger scharf um die Kurve gefahren. Dies realisiert sich über die Zugkraft des Motors im Kurveninneren. Er wird bei einer weiten Kurve nur gedrosselt, bei einer scharfen Kurve ganz abgeschaltet.

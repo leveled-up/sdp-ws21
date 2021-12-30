@@ -1,0 +1,22 @@
+System Design Projekt WS 2021/2022
+Albert-Ludwigs-Universität Freiburg, Technische Fakultät TF
+Erstsemester Praktikum für Bachelor Informatik / Sustainable Systems Engineering SSE / Embedded Systems Engineering ESE / Mikrosystemtechnik MST
+
+Projektaufgabe:
+Roboter aus LEGO Mindstorms Baukasten mit NXT Mikrocontroller bauen.
+Roboter muss schwarzer Linie folgen. Schranke, Linienunterbrechungen, scharfe Kurven, Verzweige, Endmarkierung
+
+*****
+
+In Solidarität mit zukünftigen Jahrgängen auf db.fachschaft.tf.
+
+*****
+
+Diese Zusammenstellung enthält alle Unterlagen zum System Design Projekt.
+
+-> Ordner Unterlagen
+Aufgabenstellungen, Testbahn etc.
+-> Ordner Bericht
+Fotos vom Roboter, LaTeX Bericht, Bericht-Beispiel als PDF
+-> Ordner Code
+NXC-Quellcode für die beschriebenen Aufgaben

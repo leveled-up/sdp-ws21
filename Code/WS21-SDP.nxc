@@ -1,0 +1,210 @@
+// Sensors
+#define LEFT IN_4
+#define RIGHT IN_1
+#define MIDDLE IN_2
+#define DIST IN_3
+
+// Sensor thresholds
+#define BRIGHT_THRESH 45
+#define DIST_THRESH 15
+
+// Engines
+#define ENGINES OUT_AC
+#define ENGINE_L OUT_C
+#define ENGINE_R OUT_A
+
+// Engine traction
+#define SPEED 25
+#define CURVE_SPEED_MAIN 35
+#define CURVE_SPEED_INNER 5
+
+// System state refresh (ms)
+#define TTL 100
+
+// Quit if line is lost threshold
+#define LOST_MAX_CYCLES 15
+
+// Sensor inits
+void init() {
+   SetSensorLight(LEFT);
+   SetSensorLight(MIDDLE);
+   SetSensorLight(RIGHT);
+   SetSensorLowspeed(DIST);
+}
+
+// Read sensor values
+// b = brightness is dark
+// d = distance is low
+bool bLeft = false;
+bool bMiddle = false;
+bool bRight = false;
+bool dClose = true;
+
+void readSensors() {
+     int bLeftVal = Sensor(LEFT);
+     bLeft = bLeftVal <= BRIGHT_THRESH;
+     
+     int bMiddleVal = Sensor(MIDDLE);
+     bMiddle = bMiddleVal <= BRIGHT_THRESH;
+     
+     int bRightVal = Sensor(RIGHT);
+     bRight = bRightVal <= BRIGHT_THRESH;
+     
+     int distanceVal = SensorUS(DIST);
+     dClose = distanceVal <= DIST_THRESH;
+}
+
+// Display output for debugging
+string logMsg = "";
+int iterator = 0;
+void show() {
+   ClearScreen();
+   TextOut(0, LCD_LINE1, "#" + NumToStr(iterator));
+   iterator++;
+   
+   TextOut(0, LCD_LINE2, logMsg);
+
+   string Brightness = "B:"+
+      " L" + NumToStr(Sensor(LEFT)) +
+      " M" + NumToStr(Sensor(MIDDLE)) +
+      " R" + NumToStr(Sensor(RIGHT));
+   TextOut(0, LCD_LINE3, Brightness);
+
+   TextOut(0, LCD_LINE4, "Dst: " + NumToStr(SensorUS(DIST)));
+
+   TextOut(0, LCD_LINE6, "Code unter");
+   TextOut(0, LCD_LINE7, "db.fachschaft.tf");
+}
+
+// Engine control
+void eStraight() {
+   OnFwd(ENGINE_L, SPEED);
+   OnFwd(ENGINE_R, SPEED);
+}
+
+void eLeft(bool sharpLeft = false) {
+   if(sharpLeft)
+       Off(ENGINE_L);
+   else
+       OnFwd(ENGINE_L, CURVE_SPEED_INNER);
+   OnFwd(ENGINE_R, CURVE_SPEED_MAIN);
+}
+
+void eRight(bool sharpRight = false) {
+   if(sharpRight)
+       Off(ENGINE_R);
+   else
+       OnFwd(ENGINE_R, CURVE_SPEED_INNER);
+   OnFwd(ENGINE_L, CURVE_SPEED_MAIN);
+}
+
+void eStop() {
+   Off(ENGINE_L);
+   Off(ENGINE_R);
+}
+
+void eBackwards() {
+   eStop();
+   OnRev(ENGINE_L, SPEED);
+   OnRev(ENGINE_R, SPEED);
+}
+
+void eBackwardsLeft() {
+   Off(ENGINE_R);
+   OnRev(ENGINE_L, CURVE_SPEED_MAIN);
+}
+
+void eBackwardsRight() {
+   Off(ENGINE_L);
+   OnRev(ENGINE_R, CURVE_SPEED_MAIN);
+}
+
+// Engine Test
+void eTest() {
+   show();
+   eStraight();
+   Wait(3000);
+   eLeft();
+   Wait(3000);
+   eRight();
+   Wait(3000);
+   eStop();
+}
+
+// Main routine
+task main () {
+   // Prepare
+   logMsg = "Init";
+   init();
+   show();
+   Wait(3000);
+
+   // Test engines
+   // eTest();
+   
+   // Course correction loop
+   int cyclesNoLine = 0;
+   while(true) {
+       // Show current state
+       show();
+   
+       // Wait before next correction
+       Wait(TTL);
+       
+       // Read sensors
+       readSensors();
+       
+       // Obsticle ahead
+       if(dClose) {
+          logMsg = "Object on route!";
+          eStop();
+          continue;
+       }
+       
+       // Handle line-less driving
+       if(!bLeft && !bMiddle && !bRight) {
+           cyclesNoLine++;
+           if(cyclesNoLine >= LOST_MAX_CYCLES) {
+               logMsg = "End or Lost";
+               show();
+               eBackwards();
+               Wait(TTL * LOST_MAX_CYCLES);
+               eStop();
+               break;
+           }
+       } else
+           cyclesNoLine = 0;
+       
+       // L=0 | M=0,1 | R=0
+       // Drive straight ahead
+       if(!bLeft && !bRight) {
+          logMsg = "Straight ahead";
+          eStraight();
+          continue;
+       }
+       
+       // L=1 | M=1 | R=1
+       // Current place is possibly a signal
+       if(bLeft && bMiddle && bRight) {
+          logMsg = "Signal?";
+          eStraight();
+          continue;
+       }
+       
+       // L=1 | M=0,1 | R=0,1
+       // Drive left
+       if(bLeft) {
+          logMsg = "Curve left";
+          eLeft(!bMiddle);
+          continue;
+       }
+       
+       // L=0 | M=0,1 | R=1
+       // Drive right
+       if(!bLeft && bRight) {
+          logMsg = "Curve right";
+          eRight(!bMiddle);
+          continue;
+       }
+   }
+}

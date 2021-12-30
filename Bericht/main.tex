@@ -1,0 +1,94 @@
+% System Design Project (SDP)
+% Albert-Ludwigs-Universitaet Freiburg
+% WS 2021 / 2022
+% Project Report
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{ngerman}
+\usepackage[ngerman]{babel}
+
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm}
+
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+\usepackage{float}
+\usepackage{subfigure}
+
+\usepackage{csquotes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        Document settings and title         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% In German, new paragraphs are not indented
+\setlength{\parindent}{0cm}
+
+% Define new command for red color emphasis
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+% Title section
+\title{
+  \vspace{2cm}
+  \Huge System Design Projekt \\[0.2cm]
+  \LARGE Abschlussbericht WS 2021/2022
+}
+\author{\Large VORNAME NACHNAME}
+\date{ \today }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Document starts here            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle  % Inserts the title into document
+\vspace{0.25cm}
+
+% ============================================
+% CONCEPT OF THE ROBOT
+\input{robot.tex}
+
+% ============================================
+% IMAGES OF THE ROBOT'S CONSTRUCTION
+% \clearpage
+\quad % Separate images and subsections
+\vspace{2cm}
+
+% Subfigure with two images
+\begin{figure}[H]
+  \centering
+  \subfigure[Frontansicht]{
+    \includegraphics[width=0.47\textwidth]{Front.png}
+    \label{Figure:Front}
+  }
+  \subfigure[Seitenansicht]{
+    \includegraphics[width=0.47\textwidth]{Side.png}
+    \label{Figure:Side}
+  }
+  \caption{Bilder der Front- und Seitenansicht des NXT Roboters.}
+  \label{Figure:RobotPics}  % Labels are used for referencing with \ref{}
+\end{figure}
+
+% Single centered image
+\begin{figure}[H]
+  \centering
+  % Image with 70% of document width.
+  \includegraphics[width=0.47\textwidth]{Sensors.png}
+  \caption{Seitenansicht der Sensor-Vorrichtung.}
+  \label{Figure:Sensors}
+\end{figure}
+
+\quad
+%\clearpage
+
+% ============================================
+% ROBOT SOFTWARE
+\input{software.tex}
+
+% ============================================
+% PROJECT ISSUES
+\input{issues.tex}
+
+\end{document}
